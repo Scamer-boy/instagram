@@ -408,6 +408,11 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
   },
+  name: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
   bio: {
     fontSize: 14,
     color: "gray",

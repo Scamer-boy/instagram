@@ -7,7 +7,7 @@
 //     Profile: {userId?: string};
 //     Login: undefined;
 //     Signup: undefined;
-    
+
 // }
 
 // const appNavigation = () => {
@@ -27,6 +27,7 @@
 
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { UserProfile } from "../types/HomeSceen";
 
 export type RootStackParamList = {
     Home: undefined;
@@ -35,7 +36,7 @@ export type RootStackParamList = {
     OtherUserProfile: { userId: string };
     Login: undefined;
     Signup: undefined;
-    EditProfile: undefined;
+    EditProfile: { userProfile: UserProfile; profile: string };
     ResetPassword: undefined;
     ForgotPassword: undefined;
 };

@@ -706,12 +706,12 @@ import React from "react";
 import { 
   View, Text, TextInput, Image, StyleSheet, TouchableOpacity, ScrollView 
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import  useNavigation  from "../hooks/useNavigation";
 import { useEditProfile } from "../hooks/useEditProfile";
 import { EditProfileScreenProps } from "../types/EditProfile";
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ route }) => {
-  const navigation = useNavigation();
+const {navigation} = useNavigation();
   const profileData = route?.params || {};
   const {
     name, setName,
@@ -783,7 +783,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ route }) => {
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Bio</Text>
           <TextInput
-            style={[styles.input, styles.descriptionInput]}
+            style={[styles.input]}
             placeholder="Enter a short description"
             value={bio}
             onChangeText={setBio}

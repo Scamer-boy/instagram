@@ -5,11 +5,14 @@ export interface UserProfile {
     name: string;
     bio: string;
     profilePicture: string;
+    
   }
   
   export interface Post {
     imageUrl: string;
   }
+
+  
   
   export type RootStackParamList = {
     Profile: { userId: string };

@@ -1,5 +1,124 @@
+// import { useEffect, useState } from "react";
+// import { collection, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+// import { useSelector } from "react-redux";
+// import { db } from "../screens/store/firebaseconfig";
+// import { RootState } from "../screens/store/Store";
+// import { Post, UserProfile } from "../types/HomeSceen";
+// import useNavigation from "./useNavigation";
+
+// export const useHomeScreen = () => {
+//   const [posts, setPosts] = useState<Post[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [userProfiles, setUserProfiles] = useState<UserProfile>({});
+//   const user = useSelector((state: RootState) => state.auth.user);
+//   const {navigation} = useNavigation();
+
+//   // Fetch Posts and Users
+//   useEffect(() => {
+//     setLoading(true);
+//     try {
+//       const postsCollectionRef = collection(db, "posts");
+
+//       const unsubscribe = onSnapshot(postsCollectionRef, async (postsSnapshot) => {
+//         const postsData: Post[] = postsSnapshot.docs.map((doc) => ({
+//           id: doc.id,
+//           ...(doc.data() as Omit<Post, "id">),
+//           likes: doc.data()?.likes || [],
+//         }));
+
+//         setPosts(postsData);
+
+//         const uniqueUserIds = [...new Set(postsData.map((post) => post.userId))];
+
+//         uniqueUserIds.forEach((userId) => {
+//           const userDocRef = doc(db, "users", userId);
+//           onSnapshot(userDocRef, (userDoc) => {
+//             if (userDoc.exists()) {
+//               setUserProfiles((prev) => ({ ...prev, [userId]: userDoc.data() }));
+//             }
+//           });
+//         });
+//       });
+
+//       return () => unsubscribe();
+//     } catch (error) {
+//       console.error("Error fetching posts:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, []);
+
+//   // Like/Unlike a Post
+//   const handleLikeToggle = async (postId: string, currentLikes: string[]) => {
+//     if (!user) return;
+
+//     const postRef = doc(db, "posts", postId);
+//     const isLiked = currentLikes.includes(user.uid);
+
+//     setPosts((prevPosts) =>
+//       prevPosts.map((post) =>
+//         post.id === postId
+//           ? {
+//               ...post,
+//               likes: isLiked
+//                 ? post.likes.filter((uid: string) => uid !== user.uid)
+//                 : [...post.likes, user.uid],
+//             }
+//           : post
+//       )
+//     );
+
+//     try {
+//       await updateDoc(postRef, {
+//         likes: isLiked ? arrayRemove(user.uid) : arrayUnion(user.uid),
+//       });
+//     } catch (error) {
+//       console.error("Error updating likes:", error);
+//       setPosts((prevPosts) =>
+//         prevPosts.map((post) =>
+//           post.id === postId
+//             ? {
+//                 ...post,
+//                 likes: isLiked
+//                   ? [...post.likes, user.uid]
+//                   : post.likes.filter((uid: string) => uid !== user.uid),
+//               }
+//             : post
+//         )
+//       );
+//     }
+//   };
+
+//   // Navigate to User Profile
+//   const handleProfileClick = (profileUserId: string) => {
+//     if (profileUserId === user?.uid) {
+//       navigation.navigate("Profile");
+//     } else {
+//       navigation.navigate("OtherUserProfile", { userId: profileUserId });
+//     }
+//   };
+
+//   return {
+//     user,
+//     posts,
+//     loading,
+//     userProfiles,
+//     handleLikeToggle,
+//     handleProfileClick,
+//   };
+// };
+
+
+
+
+
+
+
+
+
+
 import { useEffect, useState } from "react";
-import { collection, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove, getDocs, query, where } from "firebase/firestore";
 import { useSelector } from "react-redux";
 import { db } from "../screens/store/firebaseconfig";
 import { RootState } from "../screens/store/Store";
@@ -11,41 +130,41 @@ export const useHomeScreen = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [userProfiles, setUserProfiles] = useState<UserProfile>({});
   const user = useSelector((state: RootState) => state.auth.user);
-  const {navigation} = useNavigation();
+  const { navigation } = useNavigation();
 
-  // Fetch Posts and Users
+  // Fetch Posts and Users Efficiently
   useEffect(() => {
     setLoading(true);
-    try {
-      const postsCollectionRef = collection(db, "posts");
+    const postsCollectionRef = collection(db, "posts");
 
-      const unsubscribe = onSnapshot(postsCollectionRef, async (postsSnapshot) => {
-        const postsData: Post[] = postsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Omit<Post, "id">),
-          likes: doc.data()?.likes || [],
-        }));
+    const unsubscribe = onSnapshot(postsCollectionRef, async (postsSnapshot) => {
+      const postsData: Post[] = postsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Post, "id">),
+        likes: doc.data()?.likes || [],
+      }));
 
-        setPosts(postsData);
+      setPosts(postsData);
 
-        const uniqueUserIds = [...new Set(postsData.map((post) => post.userId))];
+      // Get unique user IDs and fetch them in one query
+      const uniqueUserIds = [...new Set(postsData.map((post) => post.userId))];
 
-        uniqueUserIds.forEach((userId) => {
-          const userDocRef = doc(db, "users", userId);
-          onSnapshot(userDocRef, (userDoc) => {
-            if (userDoc.exists()) {
-              setUserProfiles((prev) => ({ ...prev, [userId]: userDoc.data() }));
-            }
-          });
+      if (uniqueUserIds.length > 0) {
+        const usersQuery = query(collection(db, "users"), where("uid", "in", uniqueUserIds));
+        const userDocs = await getDocs(usersQuery);
+
+        const userData: UserProfile = {};
+        userDocs.forEach((doc) => {
+          userData[doc.id] = doc.data();
         });
-      });
 
-      return () => unsubscribe();
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
+        setUserProfiles(userData);
+      }
+      
       setLoading(false);
-    }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Like/Unlike a Post
@@ -55,15 +174,11 @@ export const useHomeScreen = () => {
     const postRef = doc(db, "posts", postId);
     const isLiked = currentLikes.includes(user.uid);
 
+    // Optimistically update UI before Firestore request
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
         post.id === postId
-          ? {
-              ...post,
-              likes: isLiked
-                ? post.likes.filter((uid: string) => uid !== user.uid)
-                : [...post.likes, user.uid],
-            }
+          ? { ...post, likes: isLiked ? post.likes.filter((uid) => uid !== user.uid) : [...post.likes, user.uid] }
           : post
       )
     );
@@ -74,15 +189,11 @@ export const useHomeScreen = () => {
       });
     } catch (error) {
       console.error("Error updating likes:", error);
+      // Revert UI change if Firestore update fails
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === postId
-            ? {
-                ...post,
-                likes: isLiked
-                  ? [...post.likes, user.uid]
-                  : post.likes.filter((uid: string) => uid !== user.uid),
-              }
+            ? { ...post, likes: isLiked ? [...post.likes, user.uid] : post.likes.filter((uid) => uid !== user.uid) }
             : post
         )
       );
@@ -91,11 +202,7 @@ export const useHomeScreen = () => {
 
   // Navigate to User Profile
   const handleProfileClick = (profileUserId: string) => {
-    if (profileUserId === user?.uid) {
-      navigation.navigate("Profile");
-    } else {
-      navigation.navigate("OtherUserProfile", { userId: profileUserId });
-    }
+    navigation.navigate(profileUserId === user?.uid ? "Profile" : "OtherUserProfile", { userId: profileUserId });
   };
 
   return {

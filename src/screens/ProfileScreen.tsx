@@ -498,22 +498,23 @@
 
 
 import React, { useState } from "react";
-import { 
-  View, Text, Image, TouchableOpacity, FlatList, 
-  StyleSheet, ActivityIndicator, Modal 
+import {  View, Text, Image, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator, Modal 
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../screens/store/Store";
 import { auth } from "../screens/store/firebaseconfig";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "../types/ProfileScreentype";
+import useNavigation from "../hooks/useNavigation";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { RootStackParamList, UserProfile } from "../types/ProfileScreentype";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useProfile } from "../hooks/useProfile"; // Import custom hook
+import EditProfileScreen from "./EditProfile";
+import { useEditProfile } from "../hooks/useEditProfile";
 
 const ProfileScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "Profile">>();
   const user = useSelector((state: RootState) => state.auth.user);
-  const navigation = useNavigation();
+  const {navigation} = useNavigation();
 
   const userId = route.params?.userId || user?.uid; 
   const { profile, posts, loadingProfile, loadingPosts } = useProfile(userId);
@@ -558,7 +559,7 @@ const ProfileScreen = () => {
         </TouchableOpacity>
       </Modal>
 
-      {/* Profile Section */}
+      {/* Profile Section*/}
       <View style={styles.profileHeader}>
         <View style={styles.profileImageContainer}>
           <Image source={{ uri: profile?.profilePicture || "https://via.placeholder.com/100" }} style={styles.profileImage} />
@@ -569,12 +570,22 @@ const ProfileScreen = () => {
         {user?.uid === userId && (
           <TouchableOpacity
             style={styles.editProfileButton}
-            onPress={() => navigation.navigate("EditProfile", profile)}
+            onPress={() => {
+              if (profile) {
+                navigation.navigate("EditProfile", { userProfile: profile as UserProfile, profile: profile.username });
+              }
+            }}
+          
+          
+
           >
             <Text style={styles.editProfileText}>Edit Profile</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </View> 
+
+
+
 
       {/* Tabs Image (Optional) */}
       <Image source={require("./constants/assets/Tabs.png")} style={styles.fixedImage} />

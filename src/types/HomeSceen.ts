@@ -11,6 +11,8 @@ export interface Post {
     [key: string]: {
       username?: string;
       profilePicture?: string;
-    };
+     };
   }
   
+  
+   
