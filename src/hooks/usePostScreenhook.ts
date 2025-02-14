@@ -3,9 +3,9 @@ import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
-import { db } from "../screens/store/firebaseconfig";
-import { RootState } from "../screens/store/Store";
-import { addPost } from "../screens/store/slices/PostSlice";
+import { db } from "../store/firebaseconfig";
+import { RootState } from "../store/Store";
+import { addPost } from "../store/slices/PostSlice";
 import { Post } from "../types/PostSceen"; // Importing types
 
 export const useUploadPost = () => {

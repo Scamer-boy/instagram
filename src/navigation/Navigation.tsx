@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -5,29 +6,44 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Image } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/Store";
+import { RootState } from "../store/Store";
 import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../../store/firebaseconfig";
-import { updateProfilePicture } from "../../store/slices/ProfileSlice"; // ✅ Import Fix
+import { db } from "../store/firebaseconfig";
+import { updateProfilePicture } from "../store/slices/ProfileSlice";
 
 // Import Screens
-import HomeScreen from "../../HomeScreen";
-import ProfileScreen from "../../ProfileScreen";
-import UploadScreen from "../../PostScreen";
-import LoginScreen from "../../authentication/LoginScreen";
-import SignupScreen from "../../authentication/SignupScreen";
-import EditProfileScreen from "../../EditProfile";
-import OtherUserProfileScreen from "../../otherUserProfile";
-import ForgotPasswordScreen from "../../authentication/forgetPassword";
-import ResetPasswordScreen from "../../authentication/Reset Password";
+import HomeScreen from "../screens/HomeScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import UploadScreen from "../screens/PostScreen";
+import LoginScreen from "../screens/authentication/LoginScreen";
+import SignupScreen from "../screens/authentication/SignupScreen";
+import EditProfileScreen from "../screens/EditProfile";
+import OtherUserProfileScreen from "../screens/otherUserProfile";
+import ForgotPasswordScreen from "../screens/authentication/forgetPassword";
+import ResetPasswordScreen from "../screens/authentication/Reset Password";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+/* ------------------- Home Stack (Includes OtherUserProfile) ------------------- */
+const HomeStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    <Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen} />
+  </Stack.Navigator>
+);
 
-function BottomTabs() {
-  const user = useSelector((state: RootState) => state.auth.user);
-  const profilePicture = useSelector((state: RootState) => state.profile.profilePicture); // ✅ Get Profile Picture from Redux
+/* ------------------- Profile Stack (Includes EditProfile) ------------------- */
+const ProfileStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+    <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+  </Stack.Navigator>
+);
+
+/* ------------------- Bottom Tab Navigation ------------------- */
+const BottomTabs = () => {
+  const profilePicture = useSelector((state: RootState) => state.profile.profilePicture);
 
   return (
     <Tab.Navigator
@@ -37,13 +53,13 @@ function BottomTabs() {
           height: 60,
           backgroundColor: "#fff",
           borderTopWidth: 0,
-          position: "absolute", // ✅ Sticky navbar
+          position: "absolute",
         },
         tabBarShowLabel: false,
-        tabBarHideOnKeyboard: true, // ✅ Hide navbar when keyboard opens
+        tabBarHideOnKeyboard: true,
       }}
     >
-      {/* Home Icon */}
+      {/* Home */}
       <Tab.Screen
         name="Home"
         component={HomeStack}
@@ -54,7 +70,7 @@ function BottomTabs() {
         }}
       />
 
-      {/* Upload Icon - Bordered Square */}
+      {/* Upload */}
       <Tab.Screen
         name="Upload"
         component={UploadScreen}
@@ -78,13 +94,13 @@ function BottomTabs() {
         }}
       />
 
-      {/* Profile Icon - Displays Profile Picture */}
+      {/* Profile */}
       <Tab.Screen
         name="Profile"
         component={ProfileStack}
         options={{
           tabBarIcon: () =>
-            profilePicture ? ( // ✅ Now Uses Redux Profile Picture
+            profilePicture ? (
               <Image
                 source={{ uri: profilePicture }}
                 style={{
@@ -93,8 +109,7 @@ function BottomTabs() {
                   borderRadius: 50,
                   borderWidth: 2,
                   borderColor: "#000",
-                  //bottom:1,
-                  top:5,
+                  top: 5,
                 }}
               />
             ) : (
@@ -104,40 +119,29 @@ function BottomTabs() {
       />
     </Tab.Navigator>
   );
-}
-
-// ✅ Home Stack to Keep OtherUserProfile Inside BottomTabs
-const HomeStack = () => {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen} />
-    </Stack.Navigator>
-  );
 };
 
-// ✅ Profile Stack for Edit Profile
-const ProfileStack = () => {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-    </Stack.Navigator>
-  );
-};
+/* ------------------- Authentication Stack ------------------- */
+const AuthStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="Signup" component={SignupScreen} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+  </Stack.Navigator>
+);
 
+/* ------------------- Main App Navigation ------------------- */
 export default function AppNavigation() {
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
 
-  // ✅ Fetch Profile Picture in Real-Time from Firestore
+  // Fetch Profile Picture in Real-Time
   useEffect(() => {
     if (user?.uid) {
       const userDocRef = doc(db, "users", user.uid);
       const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
         if (docSnap.exists()) {
-          const userData = docSnap.data();
-          dispatch(updateProfilePicture(userData.profilePicture || ""));
+          dispatch(updateProfilePicture(docSnap.data().profilePicture || ""));
         }
       });
 
@@ -154,11 +158,7 @@ export default function AppNavigation() {
             <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
           </>
         ) : (
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Signup" component={SignupScreen} />
-            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          </>
+          <Stack.Screen name="Auth" component={AuthStack} />
         )}
       </Stack.Navigator>
     </NavigationContainer>

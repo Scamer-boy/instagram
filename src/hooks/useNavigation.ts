@@ -1,30 +1,3 @@
-// import { useNavigation } from "@react-navigation/native"
-// import { StackNavigationProp } from "@react-navigation/stack";
-
-// export type RootStackParamList = {
-//     Home: undefined;
-//     Upload: undefined;
-//     Profile: {userId?: string};
-//     Login: undefined;
-//     Signup: undefined;
-
-// }
-
-// const appNavigation = () => {
-//     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-//     return {
-//         navigation
-//     }
-// }
-// export default appNavigation
-
-
-
-
-
-
-
-
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { UserProfile } from "../types/HomeSceen";

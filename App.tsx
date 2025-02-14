@@ -50,9 +50,9 @@
 
 import React, { useEffect, useState } from "react";
 import { Provider, useDispatch } from "react-redux";
-import { store } from "./src/screens/store/Store";
-import AppNavigation from "./src/screens/constants/navigation/Navigation";
-import { setUser, logoutUser } from "./src/screens/store/slices/AuthSlice";
+import { store } from "./src/store/Store";
+import AppNavigation from "./src/navigation/Navigation";
+import { setUser, logoutUser } from "./src/store/slices/AuthSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Toast from "react-native-toast-message";
 import * as SplashScreen from "expo-splash-screen";

@@ -3,7 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/AuthSlice";
 import postReducer from "./slices/PostSlice";
 import { profileReducer } from "./slices/ProfileSlice";
-import HomeScreen from "../HomeScreen";
+import HomeScreen from "../screens/HomeScreen";
 
 
 

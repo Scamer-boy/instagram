@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { doc, onSnapshot, collection, query, where } from "firebase/firestore";
-import { db } from "../screens/store/firebaseconfig";
+import { db } from "../store/firebaseconfig";
 import { UserProfile, Post } from "../types/ProfileScreentype";
 
 export const useProfile = (userId: string | undefined) => {

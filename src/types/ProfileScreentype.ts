@@ -15,6 +15,7 @@ export interface UserProfile {
   
   
   export type RootStackParamList = {
-    Profile: { userId: string };
-    EditProfile: { username: string; name: string; bio: string; profileImage: string };
+Profile: { userId: string };
+   EditProfile: { username: string; name: string; bio: string; profileImage: string; };
+ 
   };
