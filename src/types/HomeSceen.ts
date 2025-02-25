@@ -6,11 +6,12 @@ export interface Post {
     caption: string;
     likes: string[];
   }
-  
   export interface UserProfile {
     [key: string]: {
       username?: string;
       profilePicture?: string;
+  
+
      };
   }
   

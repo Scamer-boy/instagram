@@ -1,10 +1,13 @@
+
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from "react-native"; // ✅ Added Image
+import { View, Text, TextInput, Alert, Image, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/Store";
 import useResetPassword from "../../hooks/useResetPassword";
+import Button from "../../components/Buttons/Btn"; //  Reusable Button Import
+import Toast from "react-native-toast-message"; //  Toast for Error/Success Messages
 
 const ResetPasswordScreen = () => {
   const navigation = useNavigation();
@@ -14,31 +17,43 @@ const ResetPasswordScreen = () => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const { handlePasswordReset, loading, error } = useResetPassword(user);
+  const { handlePasswordReset, loading } = useResetPassword(user);
+
+  const validateForm = () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Toast.show({ type: "error", text1: "Error", text2: "All fields are required." });
+      return false;
+    }
+    if (newPassword.length < 6) {
+      Toast.show({ type: "error", text1: "Error", text2: "New password must be at least 6 characters." });
+      return false;
+    }
+    if (newPassword !== confirmPassword) {
+      Toast.show({ type: "error", text1: "Error", text2: "Passwords do not match." });
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async () => {
+    if (!validateForm()) return;
+
     const result = await handlePasswordReset(currentPassword, newPassword, confirmPassword);
     if (result === "Password updated successfully!") {
-      Alert.alert("Success", result);
-      navigation.goBack();
-    } else if (error) {
-      Alert.alert("Error", error);
+      Toast.show({ type: "success", text1: "Success", text2: result });
+      setTimeout(() => navigation.goBack(), 2000);
     }
   };
 
   return (
     <View style={styles.container}>
       {/* Back Button */}
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
+      <Ionicons name="arrow-back" size={24} color="black" style={styles.backButton} onPress={() => navigation.goBack()} />
 
       {/* Logo */}
-      <View style={styles.header}>
-        <Image source={require("../../../assets/Instagram-logo.png")} style={styles.logo} />
-      </View>
+      <Image source={require("../../../assets/Instagram-logo.png")} style={styles.logo} />
 
-      {/* Input Fields */}
+      {/* Form Inputs */}
       <TextInput
         style={styles.input}
         placeholder="Old Password"
@@ -64,12 +79,19 @@ const ResetPasswordScreen = () => {
         onChangeText={setConfirmPassword}
       />
 
-      {/* Reset Password Button */}
-      <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
-        <Text style={styles.buttonText}>Reset Password</Text>
-      </TouchableOpacity>
+      {/* ✅ Reusable Button */}
+      {/* <Button title="Reset Password" onPress={handleSubmit} backgroundColor="#3897f0" loading={loading} /> */}
+      <View style={{ marginTop: 90,width: '100%' }}>
+  <Button 
+    title="Reset Password" 
+    onPress={handleSubmit} 
+    backgroundColor="#3897f0" 
+    loading={loading} 
+  />
+</View>
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {/* Toast Messages */}
+      <Toast />
     </View>
   );
 };
@@ -84,20 +106,17 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: "absolute",
-    top: 45,
+    top: 55,
     left: 15,
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 20,
   },
   logo: {
     width: 140,
     height: 40,
     resizeMode: "contain",
-    top: 70,
+    marginTop: 70,
   },
   input: {
+    top: 80,
     width: "100%",
     height: 45,
     borderWidth: 1,
@@ -106,26 +125,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: "#f9f9f9",
     marginBottom: 15,
-    top: 190,
-  },
-  button: {
-    backgroundColor: "#3897f0",
-    paddingVertical: 12,
-    borderRadius: 5,
-    alignItems: "center",
-    width: "100%",
-    top: 230,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  errorText: {
-    color: "red",
-    marginTop: 10,
+    
   },
 });
 
 export default ResetPasswordScreen;
-

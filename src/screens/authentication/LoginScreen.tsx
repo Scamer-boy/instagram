@@ -1,13 +1,26 @@
+
+
+
+
 import React, { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import useAuth from "../../hooks/useAuth"; // Import the hook
 import appNavigation from "../../hooks/useNavigation";
+import Button from "../../components/Buttons/Btn"; //  Import Reusable Button Component
 
 export default function LoginScreen() {
   const { navigation } = appNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, error } = useAuth(); // Use the hook
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Email and password are required!");
+      return;
+    }
+    await login(email, password);
+  };
 
   return (
     <View style={styles.container}>
@@ -17,9 +30,10 @@ export default function LoginScreen() {
       </View>
 
       <TextInput
-        placeholder="Username"
+        placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
         style={styles.input}
       />
       <TextInput
@@ -29,21 +43,18 @@ export default function LoginScreen() {
         onChangeText={setPassword}
         style={styles.input}
       />
+
       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
         <Text style={styles.forgotPassword}>Forgot password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => login(email, password)} style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Log In</Text>
-      </TouchableOpacity>
+      {/*  Reusable Button Component for Login */}
+      <View style={{ width: '85%' }}>
+  <Button title="Log In" onPress={handleLogin} backgroundColor="#0095F6" />
+</View>
+      {/* <Button title="Log In" onPress={handleLogin} backgroundColor="#0095F6"  /> */}
 
       <TouchableOpacity style={styles.googleButton}>
-        <Image
-          source={{
-            uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png",
-          }}
-          style={styles.googleIcon}
-        />
         <Image source={require("../../../assets/Icon (1).png")} style={styles.googleIcon} />
         <Text style={styles.googleText}>Login with Google</Text>
       </TouchableOpacity>
@@ -69,7 +80,7 @@ export default function LoginScreen() {
   );
 }
 
-// ✅ Correct styles object
+//  Styles object
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -101,32 +112,20 @@ const styles = StyleSheet.create({
     left: 100,
     marginBottom: 20,
   },
-  loginButton: {
-    width: "85%",
-    backgroundColor: "#0095F6",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  loginButtonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
   googleButton: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
+    top: 40,
   },
   googleIcon: {
     width: 20,
     height: 20,
-  right: 30,
-
+    right: 30,
   },
   googleText: {
     fontWeight: "bold",
-    right:25,
+    right: 25,
   },
   orContainer: {
     flexDirection: "row",
@@ -137,16 +136,16 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: "#ccc",
-    top: 22,
+    top: 40,
   },
   orText: {
     marginHorizontal: 10,
     color: "#888",
-    top: 22,
+    top: 40,
   },
   signupContainer: {
     marginTop: 20,
-    top: 40,
+    top: 60,
   },
   signupText: {
     color: "black",
@@ -167,4 +166,3 @@ const styles = StyleSheet.create({
     bottom: 82,
   },
 });
-

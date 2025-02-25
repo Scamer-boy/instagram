@@ -15,19 +15,16 @@ interface PostState {
 const initialState: PostState = {
   posts: [],
 };
-
-
-
-
 const postSlice = createSlice({
   name: 'posts',
   initialState,
+  
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
     },
     addPost: (state, action: PayloadAction<Post>) => {
-      state.posts.unshift(action.payload); // Add new post at the beginning
+      state.posts.unshift(action.payload);
     },
   },
 });

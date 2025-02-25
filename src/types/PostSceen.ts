@@ -4,5 +4,5 @@ export interface Post {
     caption: string;
     imageUrl: string;
     createdAt: any;
-  }
+}
   

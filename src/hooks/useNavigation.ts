@@ -12,6 +12,7 @@ export type RootStackParamList = {
     EditProfile: { userProfile: UserProfile; profile: string };
     ResetPassword: undefined;
     ForgotPassword: undefined;
+    
 };
 
 const appNavigation = () => {

@@ -73,15 +73,3 @@ export const forgotPasswordEmail = (email: string) => {
       console.error(error);
     });
 };
-
-
-
-
-
-
-
-
-
-
-
-

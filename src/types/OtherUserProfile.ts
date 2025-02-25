@@ -4,7 +4,7 @@ export interface UserProfile {
   name?: string;
   username?: string;
   bio?: string;
-  profilePicture?: string;
+  profileImage?: string;
 }
 
 export interface Post {

@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "instagram",
-    "slug": "instagram",
+    "name": "Instagram",
+    "slug": "cominstagram",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -16,26 +16,32 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library to upload images."
-      }
+      },
+      "bundleIdentifier": "com.instagram.app"
     },
     "android": {
+      "package": "com.instagram.app",
+      "versionCode": 1,
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "CAMERA"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.instagram.app",
-      "permissions": [
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
-      ]
+      "softwareKeyboardLayoutMode": "pan",
+      "allowBackup": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "84daf2ea-ddcc-4770-9779-ec7d00d9d407"
+        "projectId": "3e77e837-f9e5-4053-acec-b3946dd640df"
       }
-    }
+    },
+    "owner": "ramzan_123"
   }
 }

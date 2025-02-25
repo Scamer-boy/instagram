@@ -17,22 +17,24 @@ export const useProfile = (userId: string | undefined) => {
       if (docSnap.exists()) {
         setProfile(docSnap.data() as UserProfile);
       }
+      
       setLoadingProfile(false);
     });
-
-    const postsRef = collection(db, "posts");
+ const postsRef = collection(db, "posts");
     const q = query(postsRef, where("userId", "==", userId));
     const unsubscribePosts = onSnapshot(q, (querySnapshot) => {
       const userPosts = querySnapshot.docs.map((doc) => doc.data() as Post);
       setPosts(userPosts);
       setLoadingPosts(false);
     });
-
-    return () => {
+return () => {
       unsubscribeProfile();
       unsubscribePosts();
     };
   }, [userId]);
-
-  return { profile, posts, loadingProfile, loadingPosts };
+return { profile, posts, loadingProfile, loadingPosts };
 };
+
+
+
+

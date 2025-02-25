@@ -3,7 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/AuthSlice";
 import postReducer from "./slices/PostSlice";
 import { profileReducer } from "./slices/ProfileSlice";
-import HomeScreen from "../screens/HomeScreen";
+import homeReducer from "./slices/HomeSlice";
 
 
 
@@ -12,6 +12,7 @@ export const store = configureStore({
     auth: authReducer,
     posts: postReducer,
     profile: profileReducer,
+    HomeScreen: homeReducer,
   
    
   },

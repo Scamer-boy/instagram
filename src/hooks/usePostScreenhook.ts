@@ -15,7 +15,7 @@ export const useUploadPost = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // 📸 Handle Image Selection
+  //  Handle Image Selection
   const handleImagePicker = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
@@ -34,13 +34,13 @@ export const useUploadPost = () => {
     }
   };
 
-  // ❌ Handle Cancel Action
+  //  Handle Cancel Action
   const handleCancel = () => {
     setImageUri(null);
     setCaption("");
   };
 
-  // 🚀 Handle Upload
+  //  Handle Upload
   const handleUpload = async () => {
     if (!imageUri || !user) {
       Alert.alert("Error", "Please select an image first.");
@@ -56,8 +56,8 @@ export const useUploadPost = () => {
         createdAt: serverTimestamp(),
       };
 
-      await addDoc(collection(db, "posts"), post);
       dispatch(addPost(post));
+      await addDoc(collection(db, "posts"), post);
 
       setCaption("");
       setImageUri(null);

@@ -46,5 +46,4 @@ const useOtherUserProfile = (userId: string) => {
 
   return { userData, posts, loading };
 };
-
 export default useOtherUserProfile;

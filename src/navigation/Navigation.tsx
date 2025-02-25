@@ -43,7 +43,7 @@ const ProfileStack = () => (
 
 /* ------------------- Bottom Tab Navigation ------------------- */
 const BottomTabs = () => {
-  const profilePicture = useSelector((state: RootState) => state.profile.profilePicture);
+  const profilePicture = useSelector((state: RootState) => state.profile.profileImage);
 
   return (
     <Tab.Navigator
@@ -135,13 +135,13 @@ export default function AppNavigation() {
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
 
-  // Fetch Profile Picture in Real-Time
+  // Fetch Profile img in Real-Time
   useEffect(() => {
     if (user?.uid) {
       const userDocRef = doc(db, "users", user.uid);
       const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
         if (docSnap.exists()) {
-          dispatch(updateProfilePicture(docSnap.data().profilePicture || ""));
+          dispatch(updateProfilePicture(docSnap.data().profileImage || ""));
         }
       });
 
