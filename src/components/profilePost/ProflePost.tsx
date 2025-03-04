@@ -1,20 +1,7 @@
 import React from "react";
 import { Image, FlatList, StyleSheet, View, Text } from "react-native";
 
-
-//  Define Post type
-type Post = {
-  id: string;
-  imageUrl: string;
-};
-
-//  Define props type
-type PostCardProps = {
-  posts: Post[];
-};
-
-
-const PostGrid = ({ posts }: { posts: any[] }) => {
+const ProfilePost = ({ posts }: { posts: any[] }) => {
   if (!posts || posts.length === 0) {
     return (
       <View style={styles.emptyContainer}>
@@ -25,11 +12,11 @@ const PostGrid = ({ posts }: { posts: any[] }) => {
 
   return (
     <FlatList
-      data={posts.filter((item) => item && item.imageUrl)} //  Filter out undefined/null items
+      data={posts.filter((item) => item && item.imageUrl)} 
       numColumns={3}
       keyExtractor={(_, index) => index.toString()}
       renderItem={({ item }) =>
-        item?.imageUrl ? ( //  Check if `imageUrl` exists
+        item?.imageUrl ? ( 
           <Image source={{ uri: item.imageUrl }} style={styles.postImage} />
         ) : (
           <Image source={{ uri: "https://via.placeholder.com/120" }} style={styles.postImage} />
@@ -46,7 +33,7 @@ const styles = StyleSheet.create({
     width: "32%",
     aspectRatio: 1,
     margin: "0.66%",
-    borderRadius: 5,
+    borderRadius: 2,
   },
   emptyContainer: {
     flex: 1,
@@ -59,7 +46,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostGrid;
+export default ProfilePost;
 
 
 

@@ -22,5 +22,7 @@ export interface RootState {
     user: {
       uid: string;
     };
+
+    
   };
 }

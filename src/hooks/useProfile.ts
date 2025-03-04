@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { doc, onSnapshot, collection, query, where } from "firebase/firestore";
-import { db } from "../store/firebaseconfig";
+import { db } from "../firebaseConfig/firebaseConfig";
 import { UserProfile, Post } from "../types/ProfileScreentype";
 
 export const useProfile = (userId: string | undefined) => {
@@ -34,6 +34,10 @@ return () => {
   }, [userId]);
 return { profile, posts, loadingProfile, loadingPosts };
 };
+
+
+
+
 
 
 

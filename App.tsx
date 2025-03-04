@@ -1,58 +1,9 @@
-// import React, { useEffect } from "react";
-// import { Provider, useDispatch } from "react-redux";
-// import { store } from "./src/screens/store/Store";
-// import AppNavigation from "./src/screens/constants/navigation/Navigation";
-// import { setUser, logoutUser } from "./src/screens/store/slices/AuthSlice";
-// import { getAuth, onAuthStateChanged } from "firebase/auth"; // ✅ Correct Import
-// import Toast from "react-native-toast-message"; // ✅ Correct Toast Import
-
-// const App = () => {
-//   const dispatch = useDispatch();
-//   const auth = getAuth(); // ✅ Get Firebase Auth instance
-
-//   // Firebase authentication state listener
-//   useEffect(() => {
-//     const unsubscribe = onAuthStateChanged(auth, (user) => {
-//       if (user) {
-//         dispatch(setUser({ uid: user.uid, email: user.email || "" }));
-//       } else {
-//         dispatch(logoutUser());
-//       }
-//     });
-
-//     return () => unsubscribe(); // ✅ Cleanup on unmount
-//   }, [dispatch]);
-
-//   return <AppNavigation />;
-// };
-
-// export default function RootApp() {
-//   return (
-//     <Provider store={store}>
-//       <App />
-//       <Toast /> {/* ✅ Toast added properly */}
-//     </Provider>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import React, { useEffect, useState } from "react";
 import { Provider, useDispatch } from "react-redux";
-import { store } from "./src/store/Store";
+import { store } from "./src/store/store";
 import AppNavigation from "./src/navigation/Navigation";
-import { setUser, logoutUser } from "./src/store/slices/AuthSlice";
+import { setUser, logoutUser } from "./src/store/slices/authSlice";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Toast from "react-native-toast-message";
 import * as SplashScreen from "expo-splash-screen";
@@ -83,7 +34,12 @@ const App = () => {
     // Firebase authentication state listener
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(setUser({ uid: user.uid, email: user.email || "" }));
+        dispatch(setUser({ 
+          uid: user.uid, 
+          email: user.email || "", 
+          emailVerified: user.emailVerified, 
+          providerData: user.providerData 
+        }));
       } else {
         dispatch(logoutUser());
       }

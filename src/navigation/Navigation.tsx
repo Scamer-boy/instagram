@@ -6,10 +6,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Image } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/Store";
+import { RootState } from "../store/store";
 import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../store/firebaseconfig";
-import { updateProfilePicture } from "../store/slices/ProfileSlice";
+import { db } from "../firebaseConfig/firebaseConfig";
+import { updateProfilePicture } from "../store/slices/profileSlice";
 
 // Import Screens
 import HomeScreen from "../screens/HomeScreen";
@@ -18,9 +18,9 @@ import UploadScreen from "../screens/PostScreen";
 import LoginScreen from "../screens/authentication/LoginScreen";
 import SignupScreen from "../screens/authentication/SignupScreen";
 import EditProfileScreen from "../screens/EditProfile";
-import OtherUserProfileScreen from "../screens/otherUserProfile";
-import ForgotPasswordScreen from "../screens/authentication/forgetPassword";
-import ResetPasswordScreen from "../screens/authentication/Reset Password";
+import OtherUserProfileScreen from "../screens/OtherUserProfile";
+import ResetPasswordScreen from "../screens/authentication/ResetPassword";
+import ForgotPasswordScreen from "../screens/authentication/ForgetPassword";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

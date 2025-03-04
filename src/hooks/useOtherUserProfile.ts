@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-import { db } from "../store/firebaseconfig";
+import { db } from "../firebaseConfig/firebaseConfig";
 import { UserProfile, Post } from "../types/OtherUserProfile";
 
 const useOtherUserProfile = (userId: string) => {

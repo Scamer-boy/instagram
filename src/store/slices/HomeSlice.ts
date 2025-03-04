@@ -10,34 +10,14 @@ import {
   query, 
   where 
 } from "firebase/firestore";
-import { db } from "../firebaseconfig";
-import { RootState } from "../Store";
+import { db } from "../../firebaseConfig/firebaseConfig";
+import { RootState } from "../store";
 import { ThunkDispatch } from "@reduxjs/toolkit";
+import { Post, UserProfile } from "../../types/types";
 
-// 🟢 Post Interface
-interface Post {
-  id: string;
-  userId: string;
-  username: string;
-  country: string;
-  profilepImage: string;
-  imageUrl: string;
-  caption: string;
-  likes: string[];
-  createdAt: any;
-}
 
-// 🟢 User Profile Interface
-interface UserProfile {
-  [key: string]: {
-    uid: string;
-    username: string;
-    profileImage: string;
-    bio: string;
-  };
-}
 
-// 🟢 Redux State Interface
+
 interface HomeState {
   posts: Post[];
   userProfiles: UserProfile;
@@ -45,7 +25,7 @@ interface HomeState {
   error: string | null;
 }
 
-// 🔹 Initial State
+
 const initialState: HomeState = {
   posts: [],
   userProfiles: {},
@@ -53,7 +33,7 @@ const initialState: HomeState = {
   error: null,
 };
 
-// ✅ Real-time Listener for Posts & User Profiles
+
 export const subscribeToPosts = () => {
   return (dispatch: ThunkDispatch<RootState, void, any>) => {
     dispatch(setLoading(true));
@@ -61,7 +41,7 @@ export const subscribeToPosts = () => {
     const postsCollectionRef = collection(db, "posts");
     const usersCollectionRef = collection(db, "users");
 
-    // 🔥 Listen to Posts Collection
+    
     const unsubscribePosts = onSnapshot(postsCollectionRef, async (postsSnapshot) => {
       try {
         const postsData: Post[] = postsSnapshot.docs.map((doc) => ({
@@ -70,7 +50,7 @@ export const subscribeToPosts = () => {
           likes: doc.data()?.likes || [],
         }));
 
-        // Unique user IDs from posts
+        
         const uniqueUserIds = [...new Set(postsData.map((post) => post.userId))];
 
         let userProfiles: UserProfile = {};
@@ -90,7 +70,7 @@ export const subscribeToPosts = () => {
       }
     });
 
-    // 🔥 Listen to Users Collection for Profile Updates
+    
     const unsubscribeUsers = onSnapshot(usersCollectionRef, (usersSnapshot) => {
       try {
         let updatedUserProfiles: UserProfile = {};
@@ -105,7 +85,7 @@ export const subscribeToPosts = () => {
       }
     });
 
-    // ✅ Return function to clean up both listeners
+   
     return () => {
       unsubscribePosts();
       unsubscribeUsers();
@@ -113,22 +93,22 @@ export const subscribeToPosts = () => {
   };
 };
 
-// ✅ Handle Post Likes (🔥 Fixed Code)
+
 export const handleLikeToggle = ({ postId, userId }: { postId: string; userId: string }) => {
   return async (dispatch: any, getState: any) => {
     try {
       const state = getState();
       const postRef = doc(db, "posts", postId);
-      const post = state.HomeScreen.posts.find((p: Post) => p.id === postId); // 🔥 Fixed this line
+      const post = state.HomeScreen.posts.find((p: Post) => p.id === postId); 
 
       if (!post) return;
 
       const isLiked = post.likes.includes(userId);
 
-      // Optimistically update UI
+      
       dispatch(toggleLike({ postId, userId, isLiked }));
 
-      // Update Firestore
+      
       await updateDoc(postRef, {
         likes: isLiked ? arrayRemove(userId) : arrayUnion(userId),
       });
@@ -138,7 +118,7 @@ export const handleLikeToggle = ({ postId, userId }: { postId: string; userId: s
   };
 };
 
-// ✅ Redux Slice
+ 
 const homeSlice = createSlice({
   name: "home",
   initialState,
@@ -166,20 +146,20 @@ const homeSlice = createSlice({
           : post
       );
     },
-    // 🆕 Update user profiles in real-time
+   
     updateUserProfiles(state, action) {
       state.userProfiles = {
         ...state.userProfiles,
-        ...action.payload, // Merge updated profiles
+        ...action.payload, 
       };
 
-      // 🆕 Update posts where userId matches, so profile changes reflect in posts
+      
       state.posts = state.posts.map((post) => {
         if (action.payload[post.userId]) {
           return {
             ...post,
             username: action.payload[post.userId].username,
-            profilepImage: action.payload[post.userId].profileImage, // Ensure this matches your Post interface
+            profilepImage: action.payload[post.userId].profileImage,
           };
         }
         return post;

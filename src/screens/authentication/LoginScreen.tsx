@@ -6,7 +6,8 @@ import React, { useState } from "react";
 import { View, TextInput, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import useAuth from "../../hooks/useAuth"; // Import the hook
 import appNavigation from "../../hooks/useNavigation";
-import Button from "../../components/Buttons/Btn"; //  Import Reusable Button Component
+import Button from "../../components/button/Button"; //  Import Reusable Button Component
+import Input from "../../components/input/Input";
 
 export default function LoginScreen() {
   const { navigation } = appNavigation();
@@ -28,21 +29,21 @@ export default function LoginScreen() {
       <View style={styles.header}>
         <Image source={require("../../../assets/Instagram-logo.png")} style={styles.logo} />
       </View>
-
-      <TextInput
+<View style={{ width: '85%' }}>
+      <Input
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
-        style={styles.input}
+        
       />
-      <TextInput
+      <Input
         placeholder="Password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
-        style={styles.input}
       />
+</View>
 
       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
         <Text style={styles.forgotPassword}>Forgot password?</Text>
@@ -50,7 +51,7 @@ export default function LoginScreen() {
 
       {/*  Reusable Button Component for Login */}
       <View style={{ width: '85%' }}>
-  <Button title="Log In" onPress={handleLogin} backgroundColor="#0095F6" />
+  <Button title="Log In" onPress={handleLogin} backgroundColor="#3797EF" />
 </View>
       {/* <Button title="Log In" onPress={handleLogin} backgroundColor="#0095F6"  /> */}
 
@@ -97,15 +98,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     top: 1,
   },
-  input: {
-    width: "85%",
-    backgroundColor: "#f5f5f5",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
+
   forgotPassword: {
     color: "#0095F6",
     alignSelf: "flex-end",
@@ -121,11 +114,11 @@ const styles = StyleSheet.create({
   googleIcon: {
     width: 20,
     height: 20,
-    right: 30,
+    right: 2,
   },
   googleText: {
     fontWeight: "bold",
-    right: 25,
+
   },
   orContainer: {
     flexDirection: "row",
@@ -134,7 +127,7 @@ const styles = StyleSheet.create({
   },
   orLine: {
     flex: 1,
-    height: 1,
+    height: 0.5,
     backgroundColor: "#ccc",
     top: 40,
   },
@@ -148,7 +141,7 @@ const styles = StyleSheet.create({
     top: 60,
   },
   signupText: {
-    color: "black",
+    color: "grey",
   },
   signupLink: {
     color: "#0095F6",
@@ -160,7 +153,7 @@ const styles = StyleSheet.create({
   },
   bottomLine: {
     width: "100%",
-    height: 1,
+    height: 0.5,
     backgroundColor: "#ccc",
     position: "absolute",
     bottom: 82,

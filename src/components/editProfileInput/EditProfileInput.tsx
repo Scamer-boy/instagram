@@ -1,13 +1,7 @@
 import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
+import { InputFieldProps } from "../../types/types";
 
-interface InputFieldProps {
-  label: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder: string;
-  isMultiline?: boolean;
-}
 
 const InputField: React.FC<InputFieldProps> = ({ label, value, onChangeText, placeholder, isMultiline = false }) => {
   return (

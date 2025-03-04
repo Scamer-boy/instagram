@@ -3,10 +3,10 @@ import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
-import { db } from "../store/firebaseconfig";
-import { RootState } from "../store/Store";
-import { addPost } from "../store/slices/PostSlice";
-import { Post } from "../types/PostSceen"; // Importing types
+import { db } from "../firebaseConfig/firebaseConfig";
+import { RootState } from "../store/store";
+import { addPost } from "../store/slices/postSlice";
+import { Post } from "../types/PostSceen";
 
 export const useUploadPost = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -15,7 +15,7 @@ export const useUploadPost = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  //  Handle Image Selection
+
   const handleImagePicker = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
@@ -28,19 +28,19 @@ export const useUploadPost = () => {
       quality: 1,
       base64: true,
     });
-
+    
     if (!result.canceled) {
       setImageUri(`data:image/jpeg;base64,${result.assets[0].base64}`);
     }
   };
-
-  //  Handle Cancel Action
+  
+  
   const handleCancel = () => {
     setImageUri(null);
     setCaption("");
   };
 
-  //  Handle Upload
+
   const handleUpload = async () => {
     if (!imageUri || !user) {
       Alert.alert("Error", "Please select an image first.");
@@ -50,12 +50,16 @@ export const useUploadPost = () => {
     setLoading(true);
     try {
       const post: Post = {
+        id: "",
         userId: user.uid,
+        username: user?.displayName || "Unknown User",
+        profilepImage: user.photoURL || "https://via.placeholder.com/40",
+        country: '',
+        likes: [],
         caption,
         imageUrl: imageUri,
         createdAt: serverTimestamp(),
       };
-
       dispatch(addPost(post));
       await addDoc(collection(db, "posts"), post);
 

@@ -29,12 +29,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 6,
     marginTop: 15,
-    height: 45,
+    height: 41,
   },
   editProfileText: {
     color: "black",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 16,
     textAlign: "center",
   },
 });

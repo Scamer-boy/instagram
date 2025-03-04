@@ -1,25 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { PostCardProps } from "../../types/types";
+import { getRelativeTime } from "../../utils/getTime";
 
-interface PostCardProps {
-  item: {
-    id: string;
-    userId: string;
-    imageUrl: string;
-    caption: string;
-    likes: string[];
-  };
-  userData: {
-    username?: string;
-    profileImage?: string;
-  };
-  isLiked: boolean;
-  handleProfileClick: (userId: string) => void;
-handleLikeToggle: (postId: string) => void;
-}
 
-// Custom Image Loader
 const PostImage = ({ uri }: { uri: string }) => {
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +26,14 @@ const PostCard: React.FC<PostCardProps> = ({ item, userData, isLiked, handleProf
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleProfileClick(item.userId)} style={styles.userInfo}>
           <Text style={styles.username}>{userData?.username || "Unknown User"}</Text>
-        </TouchableOpacity>
+          <Text style={styles.location}>
+            {userData?.city && userData?.country ? `${userData.city}, ${userData.country}` : "FSD,Pakistan"}
+       </Text>
+ </TouchableOpacity>
+
+
+
+
         <TouchableOpacity>
           <Ionicons name="ellipsis-horizontal" size={22} color="black" />
         </TouchableOpacity>
@@ -51,7 +43,16 @@ const PostCard: React.FC<PostCardProps> = ({ item, userData, isLiked, handleProf
       <PostImage uri={item.imageUrl} />
 
       {/* Caption */}
-      <Text style={styles.caption}>{item.caption}</Text>
+      
+      <Text style={styles.caption}>
+  <Text style={{ fontWeight: "bold" }}>{userData?.username || "Unknown User"}</Text>{" "}
+   {item.caption}
+ </Text>
+
+
+  <Text style={{left:10, marginBottom:6,marginTop:6, color: "#808080"}}>{getRelativeTime({ seconds: item.createdAt })}</Text>
+
+     
 
       {/* Like Button */}
       <View style={styles.likeContainer}>
@@ -92,6 +93,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
+  location: {
+    fontSize: 12,
+    color: "black",
+  },
+
   postImage: {
     width: "100%",
     height: 400,
@@ -100,7 +106,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingHorizontal: 10,
     paddingTop: 5,
+    marginTop: 6,
   },
+ 
   likeContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -118,3 +126,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+

@@ -1,203 +1,27 @@
-// import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-// import { db } from '../firebaseconfig';
-// import { doc, getDoc, updateDoc } from 'firebase/firestore';
-
-// // Profile State Interface
-// interface ProfileState {
-//   username: string;
-//   bio: string;
-//   profilePicture: string;
-//   posts: string[];
-//   loading: boolean;
-//   error: string | null;
-// }
-
-// // Post Interface
-// export interface Post {
-//   userId: string;
-//   caption: string;
-//   imageUrl: string;
-//   createdAt: number; // Store timestamp as number
-// }
-
-// interface PostState {
-//   posts: Post[];
-// }
-
-// // Initial State
-// const initialProfileState: ProfileState = {
-//   username: '',
-//   bio: '',
-//   profilePicture: '',
-//   posts: [],
-//   loading: false,
-//   error: null,
-// };
-
-// const initialPostState: PostState = {
-//   posts: [],
-// };
-
-// // ✅ Async thunk to fetch user profile
-// export const fetchUserProfile = createAsyncThunk(
-//   'profile/fetchUserProfile',
-//   async (uid: string, { rejectWithValue }) => {
-//     try {
-//       const userDocRef = doc(db, 'users', uid);
-//       const userDoc = await getDoc(userDocRef);
-//       if (userDoc.exists()) {
-//         return userDoc.data();
-//       } else {
-//         return rejectWithValue('User not found');
-//       }
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
-
-// // ✅ Async thunk to update profile (username & bio)
-// export const updateUserProfile = createAsyncThunk(
-//   'profile/updateUserProfile',
-//   async ({ uid, username, bio }: { uid: string; username: string; bio: string }, { rejectWithValue }) => {
-//     try {
-//       const userDocRef = doc(db, 'users', uid);
-//       await updateDoc(userDocRef, { username, bio });
-//       return { username, bio };
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
-
-// // ✅ Async thunk to update only profile picture
-// export const updateUserProfilePicture = createAsyncThunk(
-//   'profile/updateUserProfilePicture',
-//   async ({ uid, profilePicture }: { uid: string; profilePicture: string }, { rejectWithValue }) => {
-//     try {
-//       const userDocRef = doc(db, 'users', uid);
-//       await updateDoc(userDocRef, { profilePicture });
-//       return { profilePicture };
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
 
 
-
-// // ✅ Profile Slice
-// const profileSlice = createSlice({
-//   name: 'profile',
-//   initialState: initialProfileState,
-//   reducers: {
-//     updateProfilePicture: (state, action: PayloadAction<string>) => {
-//       state.profilePicture = action.payload;
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchUserProfile.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(fetchUserProfile.fulfilled, (state, action: PayloadAction<any>) => {
-//         state.loading = false;
-//         state.username = action.payload.username || '';
-//         state.bio = action.payload.bio || '';
-//         state.profilePicture = action.payload.profilePicture || '';
-//         state.posts = action.payload.posts || [];
-//       })
-//       .addCase(fetchUserProfile.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload as string;
-//       })
-//       .addCase(updateUserProfile.pending, (state) => {
-//         state.loading = true;
-//       })
-//       .addCase(updateUserProfile.fulfilled, (state, action: PayloadAction<{ username: string; bio: string }>) => {
-//         state.loading = false;
-//         state.username = action.payload.username;
-//         state.bio = action.payload.bio;
-//       })
-//       .addCase(updateUserProfile.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload as string;
-//       })
-//       .addCase(updateUserProfilePicture.fulfilled, (state, action: PayloadAction<{ profilePicture: string }>) => {
-//         state.profilePicture = action.payload.profilePicture;
-//       })
-//       .addCase(updateUserProfilePicture.rejected, (state, action) => {
-//         state.error = action.payload as string;
-//       });
-//   },
-// });
-
-// // ✅ Post Slice
-// const postSlice = createSlice({
-//   name: 'posts',
-//   initialState: initialPostState,
-//   reducers: {
-//     setPosts: (state, action: PayloadAction<Post[]>) => {
-//       state.posts = action.payload;
-//     },
-//     addPost: (state, action: PayloadAction<Post>) => {
-//       state.posts.unshift(action.payload); // Add new post at the beginning
-    
-// },
-//   },
-// });
-
-// export const { setPosts, addPost } = postSlice.actions;
-// export const { updateProfilePicture } = profileSlice.actions;
-// export const profileReducer = profileSlice.reducer;
-// export const postReducer = postSlice.reducer;
-
-
-
-
-
-//profile slice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { Post } from '../../types/ProfileScreentype';
+import {ProfileState} from '../../types/types';
 
-// Profile State Interface
-interface ProfileState {
-  username: string;
-  bio: string;
-  profileImage: string; // Updated from profilePicture for consistency
-  posts: string[];
-  loading: boolean;
-  error: string | null;
-}
 
-// Post Interface
-export interface Post {
-  userId: string;
-  caption: string;
-  imageUrl: string;
-  createdAt: number; // Store timestamp as number
-}
 
-interface PostState {
-  posts: Post[];
-}
-
-// Initial States
-const initialProfileState: ProfileState = {
+const initialProfileState = {
   username: '',
   bio: '',
   profileImage: '',
-  posts: [],
+  email: '',
+  phone: '',
+  website: '',
+  gender: '',
+  posts: [] as Post[],
   loading: false,
-  error: null,
+  error: null as string | null,
+  name: '',
 };
 
-const initialPostState: PostState = {
-  posts: [],
-};
 
-//  Async thunk to fetch user profile
 export const fetchUserProfile = createAsyncThunk(
   'profile/fetchUserProfile',
   async (uid: string, { rejectWithValue }) => {
@@ -216,22 +40,24 @@ export const fetchUserProfile = createAsyncThunk(
 );
 
 
-
-//  Async thunk to update profile (username & bio)
 export const updateUserProfile = createAsyncThunk(
   'profile/updateUserProfile',
-  async ({ uid, username, bio }: { uid: string; username: string; bio: string,profileImage: string }, { rejectWithValue }) => {
+  async (
+    { uid, name, username, bio, email, phone, website, gender,}: 
+    { uid: string; name:string, username: string; bio: string; email: string; phone: string; website: string; gender: string },
+    { rejectWithValue }
+  ) => {
     try {
       const userDocRef = doc(getFirestore(), 'users', uid);
-      await updateDoc(userDocRef, { username, bio });
-      return { username, bio };
+      await updateDoc(userDocRef, {  name, username, bio, email, phone, website, gender });
+      return {    name,username, bio, email, phone, website, gender };
     } catch (error) {
       return rejectWithValue(error);
     }
   }
 );
 
-// ✅ Async thunk to update only profile image
+
 export const updateUserProfilePicture = createAsyncThunk(
   'profile/updateUserProfilePicture',
   async ({ uid, profileImage }: { uid: string; profileImage: string }, { rejectWithValue }) => {
@@ -245,7 +71,7 @@ export const updateUserProfilePicture = createAsyncThunk(
   }
 );
 
-// ✅ Profile Slice
+
 const profileSlice = createSlice({
   name: 'profile',
   initialState: initialProfileState,
@@ -262,9 +88,14 @@ const profileSlice = createSlice({
       })
       .addCase(fetchUserProfile.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.name = action.payload.name || '';
         state.username = action.payload.username || '';
         state.bio = action.payload.bio || '';
-        state.profileImage = action.payload.profileImage || ''; // Updated field
+        state.email = action.payload.email || '';
+        state.phone = action.payload.phone || '';
+        state.website = action.payload.website || '';
+        state.gender = action.payload.gender || '';
+        state.profileImage = action.payload.profileImage || ''; 
         state.posts = action.payload.posts || [];
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
@@ -274,10 +105,15 @@ const profileSlice = createSlice({
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateUserProfile.fulfilled, (state, action: PayloadAction<{ username: string; bio: string }>) => {
+      .addCase(updateUserProfile.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.name = action.payload.name;
         state.username = action.payload.username;
         state.bio = action.payload.bio;
+        state.email = action.payload.email;
+        state.phone = action.payload.phone;
+        state.website = action.payload.website;
+        state.gender = action.payload.gender;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
@@ -292,7 +128,13 @@ const profileSlice = createSlice({
   },
 });
 
-//  Post Slice
+const initialPostState = {
+  posts: [] as Post[],
+  loading: false,
+  error: null as string | null,
+};
+
+
 const postSlice = createSlice({
   name: 'posts',
   initialState: initialPostState,
@@ -309,4 +151,4 @@ const postSlice = createSlice({
 export const { setPosts, addPost } = postSlice.actions;
 export const { updateProfilePicture } = profileSlice.actions;
 export const profileReducer = profileSlice.reducer;
-export const postReducer = postSlice.reducer; // Fixed naming issue
+export const postReducer = postSlice.reducer;

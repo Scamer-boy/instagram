@@ -1,12 +1,8 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Post } from '../../types/types';
 
-export interface Post {
-  userId: string;
-  caption: string;
-  imageUrl: string;
-  createdAt: number; // Store timestamp as number
-}
+
 
 interface PostState {
   posts: Post[];

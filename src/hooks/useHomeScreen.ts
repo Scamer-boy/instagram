@@ -1,8 +1,8 @@
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store/Store";
-import { subscribeToPosts, handleLikeToggle } from "../store/slices/HomeSlice";
+import { AppDispatch, RootState } from "../store/store";
+import { subscribeToPosts, handleLikeToggle } from "../store/slices/homeSlice";
 import useNavigation from "./useNavigation";
 
 export const useHomeScreen = () => {
@@ -15,14 +15,12 @@ export const useHomeScreen = () => {
     dispatch(subscribeToPosts());
   }, [dispatch]);
 
-  // **Like Toggle Handler**
   const onLikeToggle = (postId: string) => {
     if (!user) return console.warn("User not logged in");
     console.log(`Toggling like for post: ${postId}`);
     dispatch(handleLikeToggle({ postId, userId: user.uid }));
   };
 
-  // **Navigate to Profile**
   const handleProfileClick = (profileUserId: string) => {
     navigation.navigate(profileUserId === user?.uid ? "Profile" : "OtherUserProfile", { userId: profileUserId });
   };
@@ -34,6 +32,7 @@ export const useHomeScreen = () => {
     userProfiles,
     handleLikeToggle: onLikeToggle,
     handleProfileClick,
+    
   };
 };
 

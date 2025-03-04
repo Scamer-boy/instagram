@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { app } from "../firebaseconfig"; // Your Firebase config file import
+import { app } from "../../firebaseConfig/firebaseConfig"; 
 
-// Firebase Auth instance
+
 const auth = getAuth(app);
 
-// Forgot Password Async Thunk
+
 export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (email: string, { rejectWithValue }) => {
@@ -18,11 +18,23 @@ export const forgotPassword = createAsyncThunk(
   }
 );
 
+interface User {
+  uid: string;
+  displayName?: string;
+  email: string;
+  emailVerified: boolean;
+  photoURL?: string;
+  phoneNumber?: string;
+  providerData: object[];
+}
+
 interface AuthState {
-  user: any;
+  user: User | null;
   loading: boolean;
   error: string | null;
 }
+
+
 
 const initialState: AuthState = {
   user: null,
@@ -34,7 +46,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<any>) => {
+    setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
     logoutUser: (state) => {
