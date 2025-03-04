@@ -50,7 +50,7 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
-
+firebaseConfig.ts
 # Native
 *.orig.*
 *.jks

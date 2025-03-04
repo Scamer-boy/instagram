@@ -7,12 +7,13 @@ import InputField from "../components/editProfileInput/EditProfileInput";
 import { useProfile } from "../hooks/useProfile";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../types/ProfileScreentype";
 
 const EditProfileScreen: React.FC<EditProfileScreenProps> = () => { 
-  const navigation = useNavigation(); 
   const user = useSelector((state: RootState) => state.auth.user);
   const { profile } = useProfile(user?.uid) ;
-
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const {
     name, setName,
     username, setUsername,

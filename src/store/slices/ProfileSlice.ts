@@ -1,79 +1,68 @@
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import { ProfileState, UserProfileUpdate, UserProfilePictureUpdate, PostState, Post } from "../../types/types";
 
-
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { Post } from '../../types/ProfileScreentype';
-import {ProfileState} from '../../types/types';
-
-
-
-const initialProfileState = {
-  username: '',
-  bio: '',
-  profileImage: '',
-  email: '',
-  phone: '',
-  website: '',
-  gender: '',
-  posts: [] as Post[],
+const initialProfileState: ProfileState = {
+  uid: "",
+  name: "",
+  username: "",
+  bio: "",
+  profileImage: "",
+  email: "",
+  phone: "",
+  website: "",
+  gender: "",
+  posts: [],
   loading: false,
-  error: null as string | null,
-  name: '',
+  error: null,
 };
 
-
 export const fetchUserProfile = createAsyncThunk(
-  'profile/fetchUserProfile',
+  "profile/fetchUserProfile",
   async (uid: string, { rejectWithValue }) => {
     try {
-      const userDocRef = doc(getFirestore(), 'users', uid);
+      const userDocRef = doc(getFirestore(), "users", uid);
       const userDoc = await getDoc(userDocRef);
       if (userDoc.exists()) {
-        return userDoc.data();
+        return userDoc.data() as ProfileState;
       } else {
-        return rejectWithValue('User not found');
+        return rejectWithValue("User not found");
       }
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error instanceof Error ? error.message : "An error occurred");
     }
   }
 );
-
 
 export const updateUserProfile = createAsyncThunk(
-  'profile/updateUserProfile',
-  async (
-    { uid, name, username, bio, email, phone, website, gender,}: 
-    { uid: string; name:string, username: string; bio: string; email: string; phone: string; website: string; gender: string },
-    { rejectWithValue }
-  ) => {
+  "profile/updateUserProfile",
+  async (userData: UserProfileUpdate, { rejectWithValue }) => {
     try {
-      const userDocRef = doc(getFirestore(), 'users', uid);
-      await updateDoc(userDocRef, {  name, username, bio, email, phone, website, gender });
-      return {    name,username, bio, email, phone, website, gender };
+      const { uid, ...updateData } = userData;
+      const userDocRef = doc(getFirestore(), "users", uid);
+      await updateDoc(userDocRef, updateData);
+      return updateData;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error instanceof Error ? error.message : "An error occurred");
     }
   }
 );
 
-
 export const updateUserProfilePicture = createAsyncThunk(
-  'profile/updateUserProfilePicture',
-  async ({ uid, profileImage }: { uid: string; profileImage: string }, { rejectWithValue }) => {
+  "profile/updateUserProfilePicture",
+  async ({ uid, profileImage }: UserProfilePictureUpdate, { rejectWithValue }) => {
     try {
-      const userDocRef = doc(getFirestore(), 'users', uid);
+      const userDocRef = doc(getFirestore(), "users", uid);
       await updateDoc(userDocRef, { profileImage });
       return { profileImage };
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error instanceof Error ? error.message : "An error occurred");
     }
   }
 );
 
-
 const profileSlice = createSlice({
-  name: 'profile',
+  name: "profile",
   initialState: initialProfileState,
   reducers: {
     updateProfilePicture: (state, action: PayloadAction<string>) => {
@@ -86,17 +75,9 @@ const profileSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUserProfile.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(fetchUserProfile.fulfilled, (state, action: PayloadAction<ProfileState>) => {
         state.loading = false;
-        state.name = action.payload.name || '';
-        state.username = action.payload.username || '';
-        state.bio = action.payload.bio || '';
-        state.email = action.payload.email || '';
-        state.phone = action.payload.phone || '';
-        state.website = action.payload.website || '';
-        state.gender = action.payload.gender || '';
-        state.profileImage = action.payload.profileImage || ''; 
-        state.posts = action.payload.posts || [];
+        Object.assign(state, action.payload);
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.loading = false;
@@ -105,15 +86,9 @@ const profileSlice = createSlice({
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateUserProfile.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(updateUserProfile.fulfilled, (state, action: PayloadAction<Omit<UserProfileUpdate, 'uid'>>) => {
         state.loading = false;
-        state.name = action.payload.name;
-        state.username = action.payload.username;
-        state.bio = action.payload.bio;
-        state.email = action.payload.email;
-        state.phone = action.payload.phone;
-        state.website = action.payload.website;
-        state.gender = action.payload.gender;
+        Object.assign(state, action.payload);
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
@@ -128,22 +103,21 @@ const profileSlice = createSlice({
   },
 });
 
-const initialPostState = {
-  posts: [] as Post[],
+const initialPostState: PostState = {
+  posts: [],
   loading: false,
-  error: null as string | null,
+  error: null,
 };
 
-
 const postSlice = createSlice({
-  name: 'posts',
+  name: "posts",
   initialState: initialPostState,
   reducers: {
     setPosts: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
     },
     addPost: (state, action: PayloadAction<Post>) => {
-      state.posts.unshift(action.payload); // Add new post at the beginning
+      state.posts.unshift(action.payload);
     },
   },
 });

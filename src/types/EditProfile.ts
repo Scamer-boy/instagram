@@ -4,6 +4,9 @@ import { RouteProp } from "@react-navigation/native";
 
 export interface EditProfileScreenProps {
   route?: RouteProp<{ params: UserProfile }, "params">;
+  navigation: {
+    navigate: (screen: "ResetPassword") => void;
+  };
 }
 
 export interface UserProfile {
@@ -23,6 +26,6 @@ export interface RootState {
       uid: string;
     };
 
-    
+
   };
 }

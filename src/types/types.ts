@@ -60,7 +60,12 @@ export interface RootStackParamList  {
     ForgotPassword: undefined;
     
 };
-
+export interface EditProfileButtonProps {
+  username: string;
+  name: string;
+  bio: string;
+  profileImage: string;
+}
 export interface Post {
     userId: string;
     caption: string;
@@ -96,21 +101,55 @@ export interface Post {
     displayName?: string;
     emailVerified: boolean;
     providerData: any[];
+     createdAt: Date
+
   }
   export interface ProfileState {
-    name: string; 
+    uid: string;
+    name: string;
     username: string;
     bio: string;
     profileImage: string;
+    email: string;
+    phone: string;
+    website: string;
+    gender: string;
     posts: Post[];
     loading: boolean;
     error: string | null;
-    phone: string;
-    email: string;
-    website: string;
-    gender: string;
-
   }
+  
+  export interface UserProfileUpdate {
+    uid: string;
+    name?: string;
+    username?: string;
+    bio?: string;
+    email?: string;
+    phone?: string;
+    website?: string;
+    gender?: string;
+  }
+  
+  export interface UserProfilePictureUpdate {
+    uid: string;
+    profileImage: string;
+  }
+  
+  export interface Post {
+    id: string;
+    imageUrl: string;
+    caption: string;
+    likes: string[];
+    createdAt: number;
+    userId: string;
+  }
+  
+  export interface PostState {
+    posts: Post[];
+    loading: boolean;
+    error: string | null;
+  }
+  
  
 
   

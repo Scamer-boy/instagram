@@ -1,25 +1,25 @@
- //profilescreen types.ts
+//profilescreen types.ts
 
 export interface UserProfile {
-    username: string;
-    name: string;
-    bio: string;
-    profileImage: string; 
-    website: string;
-    email: string;
-    phone:string;
-    gender: string;
-   
-  }
-   export interface Post {
-    imageUrl: string;
-    
-  }  
+  username: string;
+  name: string;
+  bio: string;
+  profileImage: string;
+  website: string;
+  email: string;
+  phone: string;
+  gender: string;
+
+}
+export interface Post {
+  imageUrl: string;
+
+}
 
 interface ProfileState {
   username: string;
   bio: string;
-  profileImage: string; 
+  profileImage: string;
   posts: string[];
   loading: boolean;
   error: string | null;
@@ -27,7 +27,7 @@ interface ProfileState {
   email: string;
   website: string;
   name: string;
-  
+
 }
 
 
@@ -35,7 +35,7 @@ export interface Post {
   userId: string;
   caption: string;
   imageUrl: string;
-  createdAt: number; 
+  createdAt: number;
 }
 
 interface PostState {
@@ -64,12 +64,12 @@ const initialPostState: PostState = {
 };
 
 
-  
-  export type RootStackParamList = {
-Profile: { userId: string };
-   EditProfile: { username: string; name: string; bio: string; profileImage: string; };
- 
-  };
+
+export type RootStackParamList = {
+  Profile: { userId: string };
+  EditProfile: { username: string; name: string; bio: string; profileImage: string; };
+  ResetPassword: undefined;
+};
 
 
 

@@ -5,10 +5,11 @@ import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import  useNavigation  from "../../hooks/useNavigation";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types/ProfileScreentype";
+import { EditProfileButtonProps } from "../../types/types";
 
 type NavigationProp = StackNavigationProp<RootStackParamList, "EditProfile">;
 
-const EditProfileButton: React.FC = () => {
+const EditProfileButton: React.FC<EditProfileButtonProps> = () => {
   const {navigation} = useNavigation();
 
   return (

@@ -4,8 +4,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/authSlice";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { User } from "../types/types";
-
+import { User } from "../types/types"; 
 export default function useAuth() {
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
@@ -15,14 +14,19 @@ export default function useAuth() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await setDoc(doc(db, "users", user.uid), {
+      const newUser: User = {
+        uid: user.uid,
         username,
         email,
-        uid: user.uid,
         createdAt: new Date(),
-      });
+        emailVerified: user.emailVerified,
+        providerData: user.providerData,
+      };
 
-      dispatch(setUser({ uid: user.uid, username, email }));
+      await setDoc(doc(db, "users", user.uid), newUser);
+
+      dispatch(setUser(newUser));
+
       setError(null);
       return true;
     } catch (err) {
@@ -34,13 +38,19 @@ export default function useAuth() {
   const login = async (email: string, password: string) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      dispatch(setUser({
-        uid: userCredential.user.uid,
-        email: userCredential.user.email || "",
-        displayName: userCredential.user.displayName || undefined,
-        emailVerified: userCredential.user.emailVerified,
-        providerData: userCredential.user.providerData
-      }));
+      const user = userCredential.user;
+
+      const loggedInUser: User = {
+        uid: user.uid,
+        email: user.email || "",
+        username: user.displayName || "",
+        emailVerified: user.emailVerified,
+        providerData: user.providerData,
+        createdAt: new Date(), 
+      };
+
+      dispatch(setUser(loggedInUser));
+
       setError(null);
       return true;
     } catch (err) {
@@ -51,4 +61,3 @@ export default function useAuth() {
 
   return { signup, login, error };
 }
-

@@ -89,7 +89,7 @@ export const useEditProfile = () => {
         }
 
         dispatch(updateUserProfile({ 
-          uid: user.uid, name, username, bio, website, email, phone, gender, profileImage,
+          uid: user.uid, name, username, bio, website, email, phone, gender,
         }));
 
         Toast.show({

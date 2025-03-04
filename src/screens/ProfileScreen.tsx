@@ -9,8 +9,13 @@ import { RootStackParamList } from "../types/ProfileScreentype";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useProfile } from "../hooks/useProfile";
 import EditProfileButton from "../components/button/EditProfileBtn";
-import PostGrid from "../components/profilePost/ProflePost"; 
-
+import PostGrid from "../components/profilePost/ProflePost";
+interface EditProfileButtonProps {
+  username: string;
+  name: string;
+  bio: string;
+  profileImage: string;
+}
 const ProfileScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, "Profile">>();
   const user = useSelector((state: RootState) => state.auth.user);
@@ -84,7 +89,7 @@ const ProfileScreen = () => {
         ) : posts.length === 0 ? (
           <Text style={styles.noPostsText}>No posts yet</Text>
         ) : (
-         
+
           <PostGrid posts={posts} />
         )}
       </View>
